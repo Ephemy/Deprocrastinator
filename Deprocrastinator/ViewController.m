@@ -15,6 +15,7 @@
 @property NSIndexPath *checkedIndexPath;
 @property BOOL editButton;
 @property int editCount;
+@property int swipeCount;
 
 @end
 
@@ -24,7 +25,7 @@
     self.editButton = NO;
     self.editCount = 0;
     [super viewDidLoad];
-    self.listTableView.allowsMultipleSelection = YES;
+//    self.listTableView.allowsMultipleSelection = YES;
     //    self.listArray = [@[] mutableCopy];
     self.listArray = [[NSMutableArray alloc]init];
     // Do any additional setup after loading the view, typically from a nib.
@@ -62,7 +63,8 @@
 
     }
     
-    else{
+    else
+    {
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
@@ -72,6 +74,22 @@
         [self.listTableView reloadData];
     }
     
+        
+    
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self onAddButtonPressed:nil];
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(editingStyle == UITableViewCellEditingStyleDelete){
+        [self.listArray removeObjectAtIndex:indexPath.row];
+        [tableView reloadData];
+    }
 }
 
 - (IBAction)onAddButtonPressed:(id)sender
@@ -99,6 +117,23 @@
         self.editButton = NO;
         editButton.title = @"Edit";
     }
+}
+- (IBAction)onSwipeGestureRecognizer:(UIGestureRecognizer *)gesture {
+    //PROVED
+//    self.textField.text = @"Alexey";
+    self.swipeCount++;
+    CGPoint location = [gesture locationInView:self.listTableView];
+    NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
+    UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
+    NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
+    for(int i = 0t; i < self.swipeCount%5; i++){
+        swipedCell.backgroundColor = colorArray[i];
+    }
+    
+//    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
+//UITextField *color =[self.listArray objectAtIndex:indexPath.row];
+//    color.backgroundColor = [UIColor blueColor];
+    
 }
 
 
