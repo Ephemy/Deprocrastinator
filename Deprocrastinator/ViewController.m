@@ -12,10 +12,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property NSMutableArray *listArray;
 @property (weak, nonatomic) IBOutlet UITableView *listTableView;
-@property NSIndexPath *checkedIndexPath;
 @property BOOL editButton;
 @property int editCount;
 @property int swipeCount;
+@property NSMutableArray *checkButton;
 
 @end
 
@@ -49,25 +49,37 @@
     return cell;}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    if(!self.checkedIndexPath){
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        self.checkedIndexPath = indexPath;
-    }
-    
-    else if([self.checkedIndexPath isEqual:indexPath]){
-        self.checkedIndexPath = nil;
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryNone;
+//    if(!self.checkedIndexPath){
+//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//        self.checkedIndexPath = indexPath;
+//    }
+//    
+//    else if([self.checkedIndexPath isEqual:indexPath]){
+//        self.checkedIndexPath = nil;
+//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//
+//    }
+//    
+//    else
+//    {
+//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//        cell.accessoryType = UITableViewCellAccessoryNone;
+//    }
 
+    if(self.checkButton[indexPath.row]){
+                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                [self.checkButton]
     }
     
-    else
-    {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+//        else if([self.checkButton[indexPath.row] isEqual:indexPath]){
+//            self.checkedIndexPath = nil;
+//            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//            cell.accessoryType = UITableViewCellAccessoryNone;
+//    
+
     
     if(self.editButton)
     {   [self.listArray removeObjectAtIndex:indexPath.row];
@@ -87,9 +99,30 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if(editingStyle == UITableViewCellEditingStyleDelete){
-        [self.listArray removeObjectAtIndex:indexPath.row];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Confirmation" message:@"Are you sure you would like to delete this item?" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self.listArray removeObjectAtIndex:indexPath.row];
+            [tableView reloadData];
+        }];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:delete];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+
         [tableView reloadData];
     }
+}
+
+#pragma mark DONT FORGET TO DO YOUR PRAGMA MARKS!
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+    NSString *stringToMove = self.listArray[sourceIndexPath.row];
+    [self.listArray removeObjectAtIndex:sourceIndexPath.row];
+    [self.listArray insertObject:stringToMove atIndex:destinationIndexPath.row];
 }
 
 - (IBAction)onAddButtonPressed:(id)sender
@@ -108,6 +141,7 @@
 
 - (IBAction)editButtonPressed:(UINavigationItem *)editButton
 {
+    self.listTableView.editing = YES;
     self.editCount++;
     if(self.editCount%2){
     self.editButton = YES;
@@ -116,6 +150,7 @@
     else{
         self.editButton = NO;
         editButton.title = @"Edit";
+        self.listTableView.editing = NO;
     }
 }
 - (IBAction)onSwipeGestureRecognizer:(UIGestureRecognizer *)gesture {
@@ -126,7 +161,7 @@
     NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
     UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
-    for(int i = 0t; i < self.swipeCount%5; i++){
+    for(int i = 0; i < self.swipeCount%5; i++){ //I DONT GET IT
         swipedCell.backgroundColor = colorArray[i];
     }
     
