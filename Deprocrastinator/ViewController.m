@@ -164,15 +164,16 @@
 - (IBAction)onSwipeGestureRecognizer:(UIGestureRecognizer *)gesture {
     //PROVED
     //    self.textField.text = @"Alexey";
-    self.swipeCount++;
+    self.swipeCount = self.swipeCount%4;
     CGPoint location = [gesture locationInView:self.listTableView];
     NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
     UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
-    swipedCell.backgroundColor = colorArray[self.swipeCount%4];
+    swipedCell.backgroundColor = colorArray[self.swipeCount];
     //    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
     //UITextField *color =[self.listArray objectAtIndex:indexPath.row];
     //    color.backgroundColor = [UIColor blueColor];
+        self.swipeCount++;
     
 }
 
