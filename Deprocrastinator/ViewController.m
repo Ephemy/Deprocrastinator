@@ -22,10 +22,15 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    self.swipeCount = 0;
+    self.checkButton = [[NSMutableArray alloc] initWithCapacity: 100];
+    for (int i = 0; i < 100; i++){
+    [self.checkButton addObject: @"NO"];
+    }
     self.editButton = NO;
     self.editCount = 0;
     [super viewDidLoad];
-//    self.listTableView.allowsMultipleSelection = YES;
+    //    self.listTableView.allowsMultipleSelection = YES;
     //    self.listArray = [@[] mutableCopy];
     self.listArray = [[NSMutableArray alloc]init];
     // Do any additional setup after loading the view, typically from a nib.
@@ -49,44 +54,45 @@
     return cell;}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if(!self.checkedIndexPath){
-//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-//        self.checkedIndexPath = indexPath;
-//    }
-//    
-//    else if([self.checkedIndexPath isEqual:indexPath]){
-//        self.checkedIndexPath = nil;
-//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//
-//    }
-//    
-//    else
-//    {
-//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//    }
-
-    if(self.checkButton[indexPath.row]){
-                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                [self.checkButton]
+    //    if(!self.checkedIndexPath){
+    //        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    //        self.checkedIndexPath = indexPath;
+    //    }
+    //
+    //    else if([self.checkedIndexPath isEqual:indexPath]){
+    //        self.checkedIndexPath = nil;
+    //        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //        cell.accessoryType = UITableViewCellAccessoryNone;
+    //
+    //    }
+    //
+    //    else
+    //    {
+    //        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //        cell.accessoryType = UITableViewCellAccessoryNone;
+    //    }
+    
+    if([self.checkButton[indexPath.row] boolValue] == NO){
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        self.checkButton[indexPath.row]= @"YES";
     }
     
-//        else if([self.checkButton[indexPath.row] isEqual:indexPath]){
-//            self.checkedIndexPath = nil;
-//            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//            cell.accessoryType = UITableViewCellAccessoryNone;
-//    
-
+    else if([self.checkButton[indexPath.row] boolValue] == YES){
+        self.checkButton[indexPath.row] = @"NO";
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    
     
     if(self.editButton)
     {   [self.listArray removeObjectAtIndex:indexPath.row];
         [self.listTableView reloadData];
     }
     
-        
+    
     
     
 }
@@ -101,6 +107,8 @@
     if(editingStyle == UITableViewCellEditingStyleDelete){
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Confirmation" message:@"Are you sure you would like to delete this item?" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *delete = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            cell.accessoryType = UITableViewCellAccessoryNone;
             [self.listArray removeObjectAtIndex:indexPath.row];
             [tableView reloadData];
         }];
@@ -108,7 +116,7 @@
         [alert addAction:delete];
         [alert addAction:cancel];
         [self presentViewController:alert animated:YES completion:nil];
-
+        
         [tableView reloadData];
     }
 }
@@ -130,12 +138,12 @@
     
     if (![self.textField.text isEqualToString:@""])
     {
-    NSString *list = self.textField.text;
-    [self.listArray addObject:list];
-    
-    [self.listTableView reloadData];
-    self.textField.text = nil;
-    [self.textField resignFirstResponder];
+        NSString *list = self.textField.text;
+        [self.listArray addObject:list];
+        
+        [self.listTableView reloadData];
+        self.textField.text = nil;
+        [self.textField resignFirstResponder];
     }
 }
 
@@ -144,8 +152,8 @@
     self.listTableView.editing = YES;
     self.editCount++;
     if(self.editCount%2){
-    self.editButton = YES;
-    editButton.title = @"Done";
+        self.editButton = YES;
+        editButton.title = @"Done";
     }
     else{
         self.editButton = NO;
@@ -155,19 +163,16 @@
 }
 - (IBAction)onSwipeGestureRecognizer:(UIGestureRecognizer *)gesture {
     //PROVED
-//    self.textField.text = @"Alexey";
+    //    self.textField.text = @"Alexey";
     self.swipeCount++;
     CGPoint location = [gesture locationInView:self.listTableView];
     NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
     UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
-    for(int i = 0; i < self.swipeCount%5; i++){ //I DONT GET IT
-        swipedCell.backgroundColor = colorArray[i];
-    }
-    
-//    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
-//UITextField *color =[self.listArray objectAtIndex:indexPath.row];
-//    color.backgroundColor = [UIColor blueColor];
+    swipedCell.backgroundColor = colorArray[self.swipeCount%4];
+    //    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
+    //UITextField *color =[self.listArray objectAtIndex:indexPath.row];
+    //    color.backgroundColor = [UIColor blueColor];
     
 }
 
