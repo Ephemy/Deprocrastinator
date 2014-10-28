@@ -53,6 +53,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"listCell" forIndexPath:indexPath];
+    if([self.checkButton[indexPath.row] boolValue] == NO){
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    if ([self.checkButton[indexPath.row] boolValue] == YES) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    
+    if([[self.colorCheck valueForKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row] ]  isEqualToString: @"0"]){
+        cell.backgroundColor = [UIColor whiteColor];
+    }
+    int swipeCount = 0;
+    
+    
+    NSString *count = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
+    swipeCount = swipeCount + [[self.colorCheck valueForKey:count] intValue];
+    NSArray *colorArray = @[[UIColor whiteColor], [UIColor redColor], [UIColor yellowColor], [UIColor greenColor] ];
+    cell.backgroundColor = colorArray[    swipeCount%4];
+    
+    
     
     cell.textLabel.text = self.listArray[indexPath.row];
     
@@ -182,7 +201,7 @@
     
     
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
-    swipedCell.backgroundColor = colorArray[swipeCount%4];
+    swipedCell.backgroundColor = colorArray[    swipeCount%4];
     NSLog(@"%ld - %ld",(long)swipeCount, (long)swipeCount%4);
     [self.colorCheck setValue:[NSString stringWithFormat:@"%ld", (long)swipeCount + 1] forKey:[NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row]];
     
