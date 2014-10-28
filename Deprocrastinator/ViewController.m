@@ -16,6 +16,7 @@
 @property int editCount;
 @property int swipeCount;
 @property NSMutableArray *checkButton;
+@property NSMutableDictionary *colorCheck;
 
 @end
 
@@ -26,6 +27,10 @@
     self.checkButton = [[NSMutableArray alloc] initWithCapacity: 100];
     for (int i = 0; i < 100; i++){
     [self.checkButton addObject: @"NO"];
+    }
+    self.colorCheck = [[NSMutableDictionary alloc] initWithCapacity:100];
+    for (int i = 0; i < 100; i++){
+        [self.colorCheck setValue:@"0" forKey:[NSString stringWithFormat:@"%ld", (long)i]];
     }
     self.editButton = NO;
     self.editCount = 0;
@@ -164,16 +169,33 @@
 - (IBAction)onSwipeGestureRecognizer:(UIGestureRecognizer *)gesture {
     //PROVED
     //    self.textField.text = @"Alexey";
-    self.swipeCount = self.swipeCount%4;
+    
+    
     CGPoint location = [gesture locationInView:self.listTableView];
     NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
     UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
+    int swipeCount = 0;
+    //NSLog(@"%ld", (long)swipedIndexPath.row);
+    
+    NSString *count = [NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row];
+    swipeCount = swipeCount + [[self.colorCheck valueForKey:count] intValue];
+    
+    
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
-    swipedCell.backgroundColor = colorArray[self.swipeCount];
+    swipedCell.backgroundColor = colorArray[swipeCount%4];
+    NSLog(@"%ld - %ld",(long)swipeCount, (long)swipeCount%4);
+    [self.colorCheck setValue:[NSString stringWithFormat:@"%ld", (long)swipeCount + 1] forKey:[NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row]];
+    
+
+    
+    
+    
+    
+//    self.colorCheck[swipedIndexPath.row] = [NSString stringWithFormat:@"%d", self.swipeCount + 1];
     //    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
     //UITextField *color =[self.listArray objectAtIndex:indexPath.row];
     //    color.backgroundColor = [UIColor blueColor];
-        self.swipeCount++;
+
     
 }
 
