@@ -26,7 +26,7 @@
     self.swipeCount = 0;
     self.checkButton = [[NSMutableArray alloc] initWithCapacity: 100];
     for (int i = 0; i < 100; i++){
-    [self.checkButton addObject: @"NO"];
+        [self.checkButton addObject: @"NO"];
     }
     self.colorCheck = [[NSMutableDictionary alloc] initWithCapacity:100];
     for (int i = 0; i < 100; i++){
@@ -205,16 +205,16 @@
     NSLog(@"%ld - %ld",(long)swipeCount, (long)swipeCount%4);
     [self.colorCheck setValue:[NSString stringWithFormat:@"%ld", (long)swipeCount + 1] forKey:[NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row]];
     
-
     
     
     
     
-//    self.colorCheck[swipedIndexPath.row] = [NSString stringWithFormat:@"%d", self.swipeCount + 1];
+    
+    //    self.colorCheck[swipedIndexPath.row] = [NSString stringWithFormat:@"%d", self.swipeCount + 1];
     //    UIButton *highButton = [[UIButton alloc]initWithFrame:(0,0,0,0)]
     //UITextField *color =[self.listArray objectAtIndex:indexPath.row];
     //    color.backgroundColor = [UIColor blueColor];
-
+    
     
 }
 
