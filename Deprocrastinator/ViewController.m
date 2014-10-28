@@ -154,8 +154,8 @@
 - (IBAction)editButtonPressed:(UINavigationItem *)editButton
 {
     self.listTableView.editing = YES;
-    self.editCount++;
-    if(self.editCount%2)
+
+    if(!self.editButton)
     {
         self.editButton = YES;
         editButton.title = @"Done";
