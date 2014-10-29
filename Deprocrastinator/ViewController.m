@@ -193,6 +193,8 @@
     CGPoint location = [gesture locationInView:self.listTableView];
     NSIndexPath *swipedIndexPath = [self.listTableView indexPathForRowAtPoint:location];
     UITableViewCell *swipedCell = [self.listTableView cellForRowAtIndexPath:swipedIndexPath];
+    if(swipedIndexPath){
+        
     int swipeCount = 0;
     //NSLog(@"%ld", (long)swipedIndexPath.row);
     
@@ -203,7 +205,8 @@
     NSArray *colorArray = @[[UIColor redColor], [UIColor yellowColor], [UIColor greenColor], [UIColor whiteColor]];
     swipedCell.backgroundColor = colorArray[    swipeCount%4];
     NSLog(@"%ld - %ld",(long)swipeCount, (long)swipeCount%4);
-    [self.colorCheck setValue:[NSString stringWithFormat:@"%ld", (long)swipeCount + 1] forKey:[NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row]];
+        [self.colorCheck setValue:[NSString stringWithFormat:@"%ld", (long)swipeCount + 1] forKey:[NSString stringWithFormat:@"%ld", (long)swipedIndexPath.row]];
+    }
     
     
     
